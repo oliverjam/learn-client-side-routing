@@ -252,8 +252,6 @@ window.addEventListener("click", handleClick);
 
 This should ensure that links navigate correctly even if they're added to the page later. It's also more efficient to have a single listener on pages with lots of links.
 
-</details>
-
 ### Making it reusable
 
 Currently the router code is all tangled up with our application code. It would be good to split it out into a standalone module that we can re-use. We want to create something with an API similar to Express:
@@ -412,6 +410,8 @@ function handleClick(event) {
   // ...
 }
 ```
+
+</details>
 
 ### Dynamic URLs
 
