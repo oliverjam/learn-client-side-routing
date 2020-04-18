@@ -454,10 +454,13 @@ Since we've given the user control over when to _start_ routing, we should proba
 <summary>Solution</summary>
 
 ```js
+// ...
 function close() {
   window.removeEventListener("click", handleClick);
   window.removeEventListener("popstate", handlePop);
 }
+
+return { get, listen, close };
 ```
 
 </details>
