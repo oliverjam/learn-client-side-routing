@@ -203,6 +203,19 @@ window.addEventListener("popstate", () => {
 
 Add a `popstate` listener to the window that navigates to the current location. This should make the back/forward history buttons work correctly.
 
+<details>
+<summary>Solution</summary>
+
+```js
+function handlePop() {
+  navigate(window.location);
+}
+
+window.addEventListener("popstate", handlePop);
+```
+
+</details>
+
 That's it! You have a minimum viable client-side router. There are however lots of improvements we can make.
 
 ## Enhancements
