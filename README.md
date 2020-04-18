@@ -183,17 +183,16 @@ window.history.pushState(null, null, "http://example.com/whatever");
 
 Frustratingly you almost never need to pass the first two arguments (state and title). The third is the URL to add to the history stack.
 
-Use `pushState` inside your `navigate` function to add the full URL to the history.
+Use `pushState` inside your link click handler function to add the full URL to the history.
 
 <details>
 <summary>Solution</summary>
 
-```js
-function navigate(url) {
-  const parsedUrl = new URL(url);
-  const callback = routes[parsedUrl.pathname];
-  window.history.pushState(null, null, parsedUrl.href);
-  callback();
+```diff
+function handleClick(event) {
+  event.preventDefault();
++ window.history.pushState(null, null, event.target.href);
+  navigate(event.target.href);
 }
 ```
 

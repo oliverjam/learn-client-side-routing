@@ -8,7 +8,6 @@ function router() {
   function navigate(url) {
     const parsedUrl = new URL(url);
     const callback = routes[parsedUrl.pathname] || routes.default;
-    window.history.pushState(null, null, parsedUrl.href);
     callback(parsedUrl);
   }
 
@@ -24,6 +23,7 @@ function router() {
       return;
     if (event.target.tagName === "A") {
       event.preventDefault();
+      window.history.pushState(null, null, event.target.href);
       navigate(event.target.href);
     }
   }

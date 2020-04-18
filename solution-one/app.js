@@ -3,6 +3,7 @@ links.forEach((link) => link.addEventListener("click", handleClick));
 
 function handleClick(event) {
   event.preventDefault();
+  window.history.pushState(null, null, event.target.href);
   navigate(event.target.href);
 }
 
@@ -15,7 +16,6 @@ function get(path, callback) {
 function navigate(url) {
   const parsedUrl = new URL(url);
   const callback = routes[parsedUrl.pathname];
-  window.history.pushState(null, null, parsedUrl.href);
   callback();
 }
 
