@@ -417,7 +417,7 @@ function handleClick(event) {
 
 We can only use static URLs right now. If we wanted to have links to `/posts/1`, `/posts/2` etc we'd need to define each individually. Ideally we'd have something like Express's route params (`/posts/:id`), but that's pretty complex to implement correctly.
 
-Instead we can rely on something browser URLs have built-in: `searchParams`. Any key/value pairs after a question mark will be parsed for you. Since we're already parsing the URL in `navigate` we can pass that parsed URL into our route callback so it's accessible there. Amend your `navigate` to do this.
+Instead we can rely on something browser URLs have built-in: [`searchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams). Any key/value pairs after a question mark will be parsed for you. Since we're already parsing the URL in `navigate` we can pass that parsed URL object into our route callback so it can use the searchParams to render the page. Amend your `navigate` to do this.
 
 Add a new route for `/posts`. Add a link to the homepage with an href of `/posts?id=1`. The route callback will be passed the parsed URL as an argument. Use `url.searchParams.get("id")` to get the ID and render a title containing it.
 
@@ -426,12 +426,13 @@ When you click the link to `/posts?id=1` you should see your post title rendered
 <details>
 <summary>Solution</summary>
 
-```js
+```diff
 // router.js
 function navigate(url) {
   const parsedUrl = new URL(url);
-  // ...
-  callback(parsedUrl);
+  const callback = routes[parsedUrl.pathname] || routes.default;
+  window.history.pushState(null, null, parsedUrl.href);
++ callback(parsedUrl);
 }
 ```
 
