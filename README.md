@@ -362,11 +362,11 @@ Add a default route, then try to navigate to a nonexistent URL. You should see y
 <details>
 <summary>Solution</summary>
 
-```js
+```
 // router.js
 function navigate(url) {
   const parsedUrl = new URL(url);
-  const callback = routes[parsedUrl.pathname] || routes.default;
++ const callback = routes[parsedUrl.pathname] || routes.default;
   window.history.pushState(null, null, parsedUrl.href);
   callback();
 }
@@ -398,13 +398,18 @@ Add a link to an external site like GitHub to test this is working.
 <details>
 <summary>Solution</summary>
 
-```js
+```diff
 function handleClick(event) {
-  if ("external" in event.target.dataset) return;
-  if (event.target.tagName === "A") {
-    event.preventDefault();
-    navigate(event.target.href);
-  }
+  if (
++   "external" in event.target.dataset ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.shiftKey ||
+    event.altKey ||
+    event.ctrlKey
+  )
+    return;
+  // ...
 }
 ```
 
