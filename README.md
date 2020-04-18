@@ -362,7 +362,7 @@ Add a default route, then try to navigate to a nonexistent URL. You should see y
 <details>
 <summary>Solution</summary>
 
-```
+```diff
 // router.js
 function navigate(url) {
   const parsedUrl = new URL(url);
