@@ -22,7 +22,15 @@ app.get("/", () => {
 
 The router will not care about how you render elements. It's unopinionated—you give it a callback to execute when the URL changes and it lets you handle the page update.
 
-## Page structure
+## Setup
+
+1. Clone this repo
+1. `npm install`
+1. `npm run dev` to start the development server
+
+**Note**: opening the `index.html` directly in your browser won't work, as ES Modules aren't supported this way. You need a server loading the files, so make sure you use `npm run dev`.
+
+### Page structure
 
 Since all our UI is going to be rendered via JavaScript we won't have much HTML. However we do need a container that we render into. This allows us to clear out the old page's elements and render the new ones on each navigation. So we'll start with an empty `<div id="app">`.
 
