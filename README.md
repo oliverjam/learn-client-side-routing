@@ -252,33 +252,6 @@ window.addEventListener("click", handleClick);
 
 This should ensure that links navigate correctly even if they're added to the page later. It's also more efficient to have a single listener on pages with lots of links.
 
-### Opting out of hijacking
-
-We currently hijack clicks for every link on the page. This means it's impossible to link to an external website. We could either make client-side navigation opt _in_ or opt \_out. Since the majority of our links will be internal it makes more sense for external links to opt out of hijacking.
-
-Let's use a [data attribute]() to mark external links, like this:
-
-```html
-<a href="https://github.com" data-external>Github</a>
-```
-
-Amend your click handler to check whether this data attribute is present before preventing the default navigation. **Hint**: you can use `"thing" in element.dataset` to check if an element has `data-thing` set.
-
-Add a link to an external site like GitHub to test this is working.
-
-<details>
-<summary>Solution</summary>
-
-```js
-function handleClick(event) {
-  if ("external" in event.target.dataset) return;
-  if (event.target.tagName === "A") {
-    event.preventDefault();
-    navigate(event.target.href);
-  }
-}
-```
-
 </details>
 
 ### Making it reusable
@@ -356,7 +329,6 @@ Luckily the [click `event`](https://developer.mozilla.org/en-US/docs/Web/API/Mou
 ```js
 function handleClick(event) {
   if (
-    "external" in event.target.dataset ||
     event.button !== 0 ||
     event.metaKey ||
     event.shiftKey ||
@@ -409,11 +381,38 @@ app.get("default", () => {
 
 </details>
 
-### Dynamic URLs
+### Opting out of hijacking
+
+We currently hijack clicks for every link on the page. This means it's impossible to link to an external website. We could either make client-side navigation opt _in_ or opt \_out. Since the majority of our links will be internal it makes more sense for external links to opt out of hijacking.
+
+Let's use a [data attribute]() to mark external links, like this:
+
+```html
+<a href="https://github.com" data-external>Github</a>
+```
+
+Amend your click handler to check whether this data attribute is present before preventing the default navigation. **Hint**: you can use `"thing" in element.dataset` to check if an element has `data-thing` set.
+
+Add a link to an external site like GitHub to test this is working.
+
+<details>
+<summary>Solution</summary>
+
+```js
+function handleClick(event) {
+  if ("external" in event.target.dataset) return;
+  if (event.target.tagName === "A") {
+    event.preventDefault();
+    navigate(event.target.href);
+  }
+}
+```
+
+### Dynamic URLs
 
 We can only use static URLs right now. If we wanted to have links to `/posts/1`, `/posts/2` etc we'd need to define each individually. Ideally we'd have something like Express's route params (`/posts/:id`), but that's pretty complex to implement correctly.
 
-Instead we can rely on something browser URLs have built-in: `searchParams`. Anything key/value pairs after a question mark will be parsed for you. Since we're already parsing the URL in `navigate` we can pass that parsed URL into our route callback so it's accessible there. Amend your `navigate` to do this.
+Instead we can rely on something browser URLs have built-in: `searchParams`. Any key/value pairs after a question mark will be parsed for you. Since we're already parsing the URL in `navigate` we can pass that parsed URL into our route callback so it's accessible there. Amend your `navigate` to do this.
 
 Add a new route for `/posts`. Add a link to the homepage with an href of `/posts?id=1`. The route callback will be passed the parsed URL as an argument. Use `url.searchParams.get("id")` to get the ID and render a title containing it.
 
