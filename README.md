@@ -13,10 +13,7 @@ const app = router();
 const appContainer = document.querySelector("#app");
 
 app.get("/", () => {
-  const title = document.createElement("h1");
-  title.textContent = "Hello world";
-  appContainer.innerHTML = "";
-  appContainer.appendChild(title);
+  appContainer.innerHTML = `<h1>Hello world</h1>`;
 });
 ```
 
@@ -152,18 +149,18 @@ Use `get` to register a callback for each route. Use whatever method you like to
 <summary>Solution</summary>
 
 ```js
+const appContainer = document.querySelector("#app");
+
 get("/", () => {
-  const title = document.createElement("h1");
-  title.textContent = "Learn Routing";
-  appContainer.innerHTML = "";
-  appContainer.appendChild(title);
+  appContainer.innerHTML = `
+    <h1>Learn Routing</h1>
+  `;
 });
 
 get("/contact", () => {
-  const title = document.createElement("h1");
-  title.textContent = "Contact us";
-  appContainer.innerHTML = "";
-  appContainer.appendChild(title);
+  appContainer.innerHTML = `
+    <h1>Contact Us</h1>
+  `;
 });
 ```
 
