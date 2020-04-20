@@ -231,10 +231,7 @@ That's it! You have a minimum viable client-side router. There are however lots 
 
 We have a bug with our link handlers. We only ever add the handlers once, which means if a link is removed from the page and re-added it will no longer run the route callback when clicked.
 
-Amend your home route handler to render a link to `/contact` underneath the `h1`.
-
-<details>
-<summary>Solution</summary>
+For example if we render a link inside our home route like this:
 
 ```js
 get("/", () => {
@@ -245,9 +242,7 @@ get("/", () => {
 });
 ```
 
-</details>
-
-Since this link is added when we render the home route it never has a click-handler added. This means it doesn't navigate properly.
+that link isn't on the page when we first call `links.addEventListener`. This means it doesn't navigate properly.
 
 We can fix this by instead adding the click handler to the _entire page_, then checking whether the event target was a link.
 
