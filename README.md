@@ -359,6 +359,37 @@ function handleClick(event) {
 
 Now you should be able to `cmd-click` to open a link in a new tab.
 
+### Redirects
+
+It's often useful to be able to programmatically render a new route. For example after a user logs in it's usual to redirect back to the homepage. It would be nice to have a function to do that like `redirect("/")`.
+
+Create a new function inside your `router` named `redirect`. It should take one argument: the path to redirect to. We can't just call `navigate` with that path, since `navigate` expects a full URL. We need to get the current page's _origin_ (e.g. `https://github.com`) and add the path to that to create a full URL (e.g. `redirect("/about")` would call `navigate("https://github.com/about"`)). You can get the current origin from `window.location`.
+
+We should also push the new redirect URL to the browser history so we don't break the back button here.
+
+<details>
+<summary>Solution</summary>
+
+```js
+function redirect(path) {
+  const url = window.location.origin + path;
+  window.history.pushState(null, null, url);
+  navigate(url);
+}
+```
+
+</details>
+
+Now we need a way to provide this redirect function to each route callback so they can use it. The easiest way to do this is to pass it as an argument to the callback. That way when we define our route we'll have access to it like this:
+
+```js
+app.get("/", (redirect) => {
+  redirect("/about");
+});
+```
+
+Edit `navigate` to pass the `redirect` function as an argument to your route callback. Try redirect from one route to another to check this worked.
+
 ### Missing routes
 
 Our router just does nothing if it can't find a matching callback for a route. This can lead to a weirdly broken looking page. We should add a way to register a "default" route that loads if there are no other matches. This will allow users to add a `404` page like this:
@@ -393,7 +424,7 @@ app.get("default", () => {
 
 </details>
 
-### Opting out of hijacking
+<!-- ### Opting out of hijacking
 
 We currently hijack clicks for every link on the page. This means it's impossible to link to an external website. We could either make client-side navigation opt _in_ or opt \_out. Since the majority of our links will be internal it makes more sense for external links to opt out of hijacking.
 
@@ -425,17 +456,24 @@ function handleClick(event) {
 }
 ```
 
-</details>
+</details> -->
 
 ### Dynamic URLs
 
 We can only use static URLs right now. If we wanted to have links to `/posts/1`, `/posts/2` etc we'd need to define each individually. Ideally we'd have something like Express's route params (`/posts/:id`), but that's pretty complex to implement correctly.
 
-Instead we can rely on something browser URLs have built-in: [`searchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams). Any key/value pairs after a question mark will be parsed for you. Since we're already parsing the URL in `navigate` we can pass that parsed URL object into our route callback so it can use the searchParams to render the page. Amend your `navigate` to do this.
+Instead we can rely on something browser URLs have built-in: [`searchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams). Any key/value pairs after a question mark will be parsed for you. Since we're already parsing the URL in `navigate` we can pass that parsed URL object into our route callback so it can use the searchParams to render the page.
 
-Add a new route for `/posts`. Add a link to the homepage with an href of `/posts?id=1`. The route callback will be passed the parsed URL as an argument. Use `url.searchParams.get("id")` to get the ID and render a title containing it.
+We're already passing `redirect` as an argument to the callback. The more arguments we add the more difficult it'll get to remember the right order. Instead we can pass a single object to the callback, with all the stuff each route might need in it. Then the route callback can access them all by name:
 
-When you click the link to `/posts?id=1` you should see your post title rendered.
+```js
+app.get("/", (routerStuff) => {
+  console.log(routerStuff.url);
+  routerStuff.redirect("/about");
+});
+```
+
+Amend your `navigate` to pass an object containing the parsed URL object and `redirect` into the route callback.
 
 <details>
 <summary>Solution</summary>
@@ -446,13 +484,22 @@ function navigate(url) {
   const parsedUrl = new URL(url);
   const callback = routes[parsedUrl.pathname] || routes.default;
   window.history.pushState(null, null, parsedUrl.href);
-+ callback(parsedUrl);
++ callback({ url: parsedUrl, redirect });
 }
 ```
 
+</details>
+
+Add a new route for `/posts`. Add a link to the homepage with an href of `/posts?id=1`. The route callback will be passed the parsed URL as an argument. Use `url.searchParams.get("id")` to get the ID and render a title containing it.
+
+When you click the link to `/posts?id=1` you should see your post title rendered.
+
+<details>
+<summary>Solution</summary>
+
 ```js
 //app.js
-app.get("/posts", (url) => {
+app.get("/posts", ({ url }) => {
   const id = url.searchParams.get("id");
   appContainer.innerHTML = `<h1>Post ${id}</h1>`;
 });
