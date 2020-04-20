@@ -8,7 +8,13 @@ function router() {
   function navigate(url) {
     const parsedUrl = new URL(url);
     const callback = routes[parsedUrl.pathname] || routes.default;
-    callback(parsedUrl);
+    callback({ url: parsedUrl, redirect });
+  }
+
+  function redirect(path) {
+    const url = window.location.origin + path;
+    window.history.pushState(null, null, url);
+    navigate(url);
   }
 
   function handleClick(event) {

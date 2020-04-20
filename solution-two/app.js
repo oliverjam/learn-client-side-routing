@@ -24,7 +24,7 @@ app.get("default", () => {
   `;
 });
 
-app.get("/posts", (url) => {
+app.get("/posts", ({ url }) => {
   const id = url.searchParams.get("id");
   appContainer.innerHTML = `<h1>Post ${id}</h1>`;
 });
