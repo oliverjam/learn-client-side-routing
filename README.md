@@ -266,7 +266,9 @@ This should ensure that links navigate correctly even if they're added to the pa
 
 ### Making it reusable
 
-Currently the router code is all tangled up with our application code. It would be good to split it out into a standalone module that we can re-use. We want to create something with an API similar to Express:
+Currently the router code is all tangled up with our application code. It would be good to split it out into a standalone module that we can re-use. All the setup, including the routes object and event listeners can be hidden away in here so we don't have to worry about it.
+
+We want to create something with an API similar to Express:
 
 ```js
 const app = router();
@@ -274,7 +276,7 @@ const app = router();
 app.get("/", () => console.log("home route"));
 ```
 
-Move your router code into a new filename `router.js`. Put the router code into a function named `router` that is default exported. The function should return an object containing the `get` method.
+Move your router code into a new filename `router.js`. Create a function named `router` that is default exported. Move all the router setup code (e.g. routes object, event listeners etc) into this function. The function should return an object containing the `get` method so we can use that in `app.js`.
 
 <details>
 <summary>Solution</summary>
