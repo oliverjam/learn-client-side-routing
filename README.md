@@ -359,7 +359,7 @@ function handleClick(event) {
 
 Now you should be able to `cmd-click` to open a link in a new tab.
 
-### Redirects
+### Redirects
 
 It's often useful to be able to programmatically render a new route. For example after a user logs in it's usual to redirect back to the homepage. It would be nice to have a function to do that like `redirect("/")`.
 
